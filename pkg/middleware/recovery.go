@@ -10,7 +10,7 @@ import (
 func ErrorHandler(c *gin.Context, err any) {
 	code := http.StatusInternalServerError
 	message := http.StatusText(code)
-	errors := []string{}
+	errors := ""
 
 	if _err, ok := err.(error); ok {
 		message = _err.Error()
@@ -19,10 +19,9 @@ func ErrorHandler(c *gin.Context, err any) {
 		message = _str
 	}
 
-	c.AbortWithStatusJSON(code, dto.StandardResponse{
+	c.AbortWithStatusJSON(code, dto.StandardErrorResponse{
 		Code:    code,
 		Message: message,
-		Data:    []string{},
 		Errors:  errors,
 	})
 }

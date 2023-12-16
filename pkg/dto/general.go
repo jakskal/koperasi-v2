@@ -8,10 +8,16 @@ import (
 )
 
 type StandardResponse struct {
-	Code    int         `json:"code"`
-	Message string      `json:"message"`
-	Data    interface{} `json:"data"`
-	Errors  []string    `json:"errors"`
+	Code       int                   `json:"code"`
+	Message    string                `json:"message"`
+	Data       interface{}           `json:"data"`
+	Pagination *BasePaginationResult `json:"page_info"`
+}
+
+type StandardErrorResponse struct {
+	Code    int    `json:"code"`
+	Message string `json:"message"`
+	Errors  string `json:"errors"`
 }
 
 type StandardDateResponse struct {
@@ -29,15 +35,15 @@ type BasePaginationResult struct {
 	Count    int `json:"count"`
 }
 
-func SuccessResponse(c *gin.Context, httpCode int, data interface{}) {
+func SuccessResponse(c *gin.Context, httpCode int, data interface{}, pagination *BasePaginationResult) {
 	if statusText := http.StatusText(httpCode); len(statusText) == 0 {
 		httpCode = http.StatusOK
 	}
 
 	c.JSON(httpCode, StandardResponse{
-		Code:    httpCode,
-		Message: http.StatusText(httpCode),
-		Data:    data,
-		Errors:  []string{},
+		Code:       httpCode,
+		Message:    http.StatusText(httpCode),
+		Data:       data,
+		Pagination: pagination,
 	})
 }

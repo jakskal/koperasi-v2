@@ -4,6 +4,7 @@ import (
 	"errors"
 
 	"github.com/gin-gonic/gin"
+	"github.com/jakskal/koperasi-v2/pkg/middleware"
 	"github.com/jakskal/koperasi-v2/server/controller"
 	"gorm.io/gorm"
 )
@@ -13,15 +14,22 @@ func RegisterUserRoute(router *gin.RouterGroup, dbConn *gorm.DB) {
 		panic(errors.New("router is nil"))
 	}
 
-	ctrl := controller.InitUserController()
+	ctrl := controller.InitUserController(dbConn)
 	router.POST("/register", ctrl.Register)
 	router.POST("/login", ctrl.Login)
 
-	routerUnauth := router.Group("")
+	routerAdmin := router.Group("/admin")
 	{
 		// TODO: add middleware
-		// routerUnauth.Use(middleware.CheckXClientId())
-		routerUnauth.GET("/list", ctrl.List)
-		routerUnauth.GET("/detail/:user_id", ctrl.GetUser)
+		routerAdmin.Use(middleware.AuthAdminAcess())
+		routerAdmin.POST("/user", ctrl.Create)
+		routerAdmin.GET("/users", ctrl.List)
+		routerAdmin.GET("/user/:user_id", ctrl.GetUser)
+		routerAdmin.PUT("/user/:user_id", ctrl.Update)
+		routerAdmin.DELETE("/user/:user_id", ctrl.Delete)
 	}
+	routerUser := router.Group("/user")
+	routerUser.Use(middleware.AuthAcess())
+	routerUser.GET("/profile", ctrl.GetProfile)
+
 }

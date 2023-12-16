@@ -15,9 +15,8 @@ import (
 )
 
 func StartServer(cfg *config.Config, DB *gorm.DB) error {
-	// Disable Console Color
-	// gin.DisableConsoleColor()
-	r := gin.New()
+	gin.ForceConsoleColor()
+	r := gin.Default()
 	r.Use(gin.CustomRecovery(middleware.ErrorHandler))
 
 	if err := registerRoutes(r, cfg, DB); err != nil {
