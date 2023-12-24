@@ -108,11 +108,11 @@ func AuthWithRoleRequired(permittedRoles ...float64) gin.HandlerFunc {
 }
 
 func AuthAdminAcess() gin.HandlerFunc {
-	return AuthWithRoleRequired(0, 1)
+	return AuthWithRoleRequired(0, 1, 2)
 }
 
 func AuthAcess() gin.HandlerFunc {
-	return AuthWithRoleRequired(0, 1, 2)
+	return AuthWithRoleRequired(0, 1, 2, 3)
 }
 
 func isRoleHasRight(role float64, roles ...float64) bool {

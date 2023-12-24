@@ -1,6 +1,9 @@
 package paginator
 
 import (
+	"strconv"
+
+	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 )
 
@@ -14,19 +17,19 @@ func PaginateGin(page int, pageSize int) func(db *gorm.DB) *gorm.DB {
 }
 
 // // GetPaginationQuery get page and pageSize for pagination purpose
-// func GetPaginationQuery(c gin.Context) (int, int) {
-// 	page, _ := strconv.Atoi(c.DefaultQuery("page", "0"))
-// 	pageSize, _ := strconv.Atoi(c.DefaultQuery("page_size", "0"))
-// 	if page == 0 {
-// 		page = 1
-// 	}
+func GetPaginationQuery(c *gin.Context) (int, int) {
+	page, _ := strconv.Atoi(c.DefaultQuery("page", "0"))
+	pageSize, _ := strconv.Atoi(c.DefaultQuery("page_size", "0"))
+	if page == 0 {
+		page = 1
+	}
 
-// 	switch {
-// 	case pageSize > 20:
-// 		pageSize = 20
-// 	case pageSize <= 0:
-// 		pageSize = 15
-// 	}
+	switch {
+	case pageSize > 20:
+		pageSize = 20
+	case pageSize <= 0:
+		pageSize = 15
+	}
 
-// 	return page, pageSize
-// }
+	return page, pageSize
+}

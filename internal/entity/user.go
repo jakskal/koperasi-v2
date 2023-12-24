@@ -6,6 +6,7 @@ type Role int
 
 const (
 	ROLE_SUPER_ADMIN Role = iota
+	ROLE_OWNER
 	ROLE_ADMIN
 	ROLE_MEMBER
 )

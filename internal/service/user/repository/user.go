@@ -21,7 +21,7 @@ func NewUserRepository(db *gorm.DB) UserRepository {
 }
 
 func (r *userRepository) SaveUser(ctx context.Context, req *entity.User) error {
-	tx := r.db.Begin().Debug()
+	tx := r.db.Begin()
 
 	defer func() {
 		if r := recover(); r != nil {

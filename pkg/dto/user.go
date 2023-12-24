@@ -28,7 +28,7 @@ type CreateUserRequest struct {
 	Password  string                     `json:"password" binding:"required"`
 	Email     string                     `json:"email" binding:"required"`
 	Phone     int                        `json:"phone" binding:"required"`
-	RoleID    entity.Role                `json:"role_id" binding:"required"`
+	RoleID    entity.Role                `json:"role_id" binding:"required, oneof=1 2 3"`
 	StatusID  entity.UserStatus          `json:"status_id" binding:"required"`
 	Attribute CreateUserAttributeRequest `json:"attribute"`
 }

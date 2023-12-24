@@ -21,5 +21,5 @@ func ErrorResponse(c *gin.Context, httpCode int, msg string, errors string) {
 }
 
 func ErrorWrap(msg string, err error) error {
-	return errors.New(fmt.Sprintf("failed create user, err: %s", err.Error()))
+	return errors.New(fmt.Sprintf("%s, err: %s", msg, err.Error()))
 }
