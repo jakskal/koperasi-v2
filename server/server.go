@@ -42,6 +42,7 @@ func registerRoutes(r *gin.Engine, cfg *config.Config, DB *gorm.DB) error {
 		{
 			rest.RegisterUserRoute(v1, DB)
 			rest.RegisterSavingRoute(v1, DB)
+			rest.RegisterLoanRoute(v1, DB)
 			// rest.RegisterHelperRoute(v1, DB)
 
 			// adminRoute := v1.Group("/admin")

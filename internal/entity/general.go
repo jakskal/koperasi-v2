@@ -5,8 +5,8 @@ import (
 )
 
 type TimeDefault struct {
-	CreatedAt time.Time  `json:"created_at"`
-	CreatedBy *int       `json:"created_by"`
+	CreatedAt time.Time  `json:"created_at" gorm:"<-:create"`
+	CreatedBy *int       `json:"created_by" gorm:"<-:create"`
 	UpdatedAt time.Time  `json:"updated_at"`
 	UpdatedBy *int       `json:"updated_by"`
 	DeletedAt *time.Time `json:"deleted_at"`

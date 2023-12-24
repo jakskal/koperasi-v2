@@ -64,7 +64,7 @@ func (s SavingController) List(c *gin.Context) {
 		return
 	}
 
-	dto.SuccessResponse(c, http.StatusOK, resp, nil)
+	dto.SuccessResponse(c, http.StatusOK, resp.Savings, &resp.Pagination)
 }
 
 func (s SavingController) Get(c *gin.Context) {

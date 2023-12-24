@@ -23,6 +23,7 @@ require (
 	github.com/josharian/intern v1.0.0 // indirect
 	github.com/lib/pq v1.1.1 // indirect
 	github.com/mailru/easyjson v0.7.7 // indirect
+	github.com/shopspring/decimal v1.3.1 // indirect
 	github.com/swaggo/swag v1.8.12 // indirect
 	golang.org/x/tools v0.7.0 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect

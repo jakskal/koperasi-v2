@@ -30,6 +30,7 @@ type UpdateSavingRequest struct {
 
 type GetSavingListRequest struct {
 	TypeID   *int   `form:"type_id"`
+	UserID   *int   `form:"user_id"`
 	Page     int    `form:"page"`
 	PageSize int    `form:"page_size"`
 	OrderBy  string `form:"order_by"`

@@ -69,10 +69,13 @@ func (r *savingRepository) List(ctx context.Context, req dto.GetSavingListReques
 		q = q.Where("saving_type_id = ?", req.TypeID)
 	}
 
+	if req.UserID != nil {
+		q = q.Where("user_id = ?", req.UserID)
+	}
+
 	q = q.Scopes(paginator.PaginateGin(req.Page, req.PageSize))
 	q.Count(&count)
 	resultQuery := q.Find(&savings)
-	fmt.Println(resultQuery.RowsAffected)
 	if err := resultQuery.Error; err != nil {
 		return result, err
 	}
