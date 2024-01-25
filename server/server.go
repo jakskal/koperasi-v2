@@ -17,8 +17,9 @@ import (
 func StartServer(cfg *config.Config, DB *gorm.DB) error {
 	gin.ForceConsoleColor()
 	r := gin.Default()
-	r.Use(gin.CustomRecovery(middleware.ErrorHandler))
 
+	r.Use(gin.CustomRecovery(middleware.ErrorHandler))
+	r.Use(middleware.CORSMiddleware())
 	if err := registerRoutes(r, cfg, DB); err != nil {
 		return errors.Wrap(err, "failed to register routes")
 	}
@@ -35,6 +36,9 @@ func registerRoutes(r *gin.Engine, cfg *config.Config, DB *gorm.DB) error {
 	r.GET("/nnd-aruok", func(c *gin.Context) {
 		c.String(http.StatusOK, "ok")
 	})
+
+	// r.Use(),
+	// )
 
 	apiRouter := r.Group("/api")
 	{

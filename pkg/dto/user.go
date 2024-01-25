@@ -28,7 +28,7 @@ type CreateUserRequest struct {
 	Password  string                     `json:"password" binding:"required"`
 	Email     string                     `json:"email" binding:"required"`
 	Phone     int                        `json:"phone" binding:"required"`
-	RoleID    entity.Role                `json:"role_id" binding:"required, oneof=1 2 3"`
+	RoleID    entity.Role                `json:"role_id" binding:"required,oneof=1 2 3"`
 	StatusID  entity.UserStatus          `json:"status_id" binding:"required"`
 	Attribute CreateUserAttributeRequest `json:"attribute"`
 }
@@ -41,7 +41,7 @@ func (u CreateUserRequest) ToUserEntity() entity.User {
 		Phone:    u.Phone,
 		RoleID:   u.RoleID,
 		Status:   u.StatusID,
-		UserAttribute: entity.UserAttribute{
+		UserAttribute: &entity.UserAttribute{
 			MemberID:       u.Attribute.MemberID,
 			IsActiveMember: u.Attribute.IsActiveMember,
 			JoinDate:       u.Attribute.JoinDate,
@@ -58,8 +58,8 @@ type CreateUserAttributeRequest struct {
 	UserID         int       `json:"-" gorm:"foreignKey:UserID;references:User.ID"`
 	MemberID       string    `json:"member_id"`
 	IsActiveMember bool      `json:"is_active_member"`
-	JoinDate       time.Time `json:"join_date"`
-	Birth          time.Time `json:"birth"`
+	JoinDate       time.Time `form:"join_date" time_format:"2006-01-02"`
+	Birth          time.Time `form:"birth" time_format:"2006-01-02"`
 	BirthPlace     string    `json:"birth_place"`
 	Address        string    `json:"address"`
 	Profession     string    `json:"profession"`
@@ -100,8 +100,8 @@ type UpdateUserAttributeRequest struct {
 	ID             int       `json:"id"`
 	MemberID       string    `json:"member_id"`
 	IsActiveMember bool      `json:"is_active_member"`
-	JoinDate       time.Time `json:"join_date"`
-	Birth          time.Time `json:"birth"`
+	JoinDate       time.Time `form:"join_date" time_format:"2006-01-02"`
+	Birth          time.Time `form:"birth" time_format:"2006-01-02"`
 	BirthPlace     string    `json:"birth_place"`
 	Address        string    `json:"address"`
 	Profession     string    `json:"profession"`
@@ -113,7 +113,7 @@ func (u UpdateUserRequest) ToUserEntity() entity.User {
 		Name:  u.Name,
 		Email: u.Email,
 		Phone: u.Phone,
-		UserAttribute: entity.UserAttribute{
+		UserAttribute: &entity.UserAttribute{
 			ID:             u.Attribute.ID,
 			MemberID:       u.Attribute.MemberID,
 			IsActiveMember: u.Attribute.IsActiveMember,

@@ -22,6 +22,12 @@ const roleClaim = "RoleID"
 // AuthWithRoleRequired scenes software that allows request to communicate and interact with application by authentication.
 func AuthWithRoleRequired(permittedRoles ...float64) gin.HandlerFunc {
 	return func(c *gin.Context) {
+
+		c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
+		c.Writer.Header().Set("Access-Control-Allow-Credentials", "true")
+		c.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With")
+		c.Writer.Header().Set("Access-Control-Allow-Methods", "POST, OPTIONS, GET, PUT")
+
 		if c.Request.Method == "OPTIONS" {
 			c.AbortWithStatus(204)
 			return

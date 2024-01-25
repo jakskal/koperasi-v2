@@ -38,7 +38,7 @@ func (r *loanRepository) UpdateLoanType(ctx context.Context, req dto.UpdateLoanT
 	tokenInfo := ctx.Value(middleware.TokenInfoContextKey).(token.Claims)
 
 	if err := tx.Updates(&entity.LoanType{
-		ID: req.ID, Name: req.Name,
+		ID: req.ID, Name: req.Name, RatioPercentage: req.RatioPercentage,
 		TimeDefault: entity.TimeDefault{
 			UpdatedBy: &tokenInfo.UserID,
 		},

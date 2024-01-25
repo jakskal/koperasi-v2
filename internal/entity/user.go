@@ -30,7 +30,7 @@ type User struct {
 	AttributeID int        `json:"-"`
 
 	TimeDefault   `gorm:"embedded"`
-	UserAttribute UserAttribute `json:"attribute" gorm:"foreignKey:AttributeID;constraint:OnUpdate:CASCADE"`
+	UserAttribute *UserAttribute `json:"attribute" gorm:"foreignKey:AttributeID;constraint:OnUpdate:CASCADE"`
 }
 
 type UserAttribute struct {

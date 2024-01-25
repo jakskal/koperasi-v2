@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"fmt"
 	"net/http"
 	"strconv"
 
@@ -175,6 +176,9 @@ func (s Loanontroller) UpdateLoanType(c *gin.Context) {
 		dto.ErrorResponse(c, http.StatusUnprocessableEntity, "failded bind payload", err.Error())
 		return
 	}
+
+	fmt.Println("request")
+	fmt.Println(request)
 
 	ctx := c.Request.Context()
 

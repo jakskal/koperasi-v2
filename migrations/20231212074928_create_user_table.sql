@@ -30,15 +30,13 @@ CREATE TABLE IF NOT EXISTS users (
    role_id NUMERIC(2) NOT NULL,
    status NUMERIC(2) NOT NULL default 0,
    phone BIGINT,
-   attribute_id int,
+   attribute_id int REFERENCES user_attributes(id),
    created_at timestamp DEFAULT now(),
    created_by INT,
    updated_at timestamp DEFAULT now(),
    updated_by INT,
    deleted_at timestamp,
-   deleted_by INT,
-   FOREIGN KEY(attribute_id) REFERENCES user_attributes(id)
-
+   deleted_by INT
 );
 -- +goose StatementEnd
 
@@ -46,11 +44,12 @@ CREATE TABLE IF NOT EXISTS users (
 
 
 -- +goose Down
-
--- +goose StatementBegin
-DROP TABLE member_attributes
--- +goose StatementEnd
-
 -- +goose StatementBegin
 DROP TABLE users
 -- +goose StatementEnd
+
+-- +goose StatementBegin
+DROP TABLE user_attributes
+-- +goose StatementEnd
+
+

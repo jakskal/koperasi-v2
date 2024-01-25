@@ -2,6 +2,7 @@ package repository
 
 import (
 	"context"
+	"fmt"
 	"time"
 
 	"github.com/jakskal/koperasi-v2/internal/entity"
@@ -29,7 +30,12 @@ func (r *userRepository) SaveUser(ctx context.Context, req *entity.User) error {
 		}
 	}()
 
+	if req.UserAttribute == nil {
+		tx = tx.Omit("UserAttribute")
+	}
+
 	if req.ID == 0 {
+
 		if err := tx.Create(req).Error; err != nil {
 			tx.Rollback()
 			return err
@@ -39,9 +45,11 @@ func (r *userRepository) SaveUser(ctx context.Context, req *entity.User) error {
 			tx.Rollback()
 			return err
 		}
-		if err := tx.Updates(req.UserAttribute).Error; err != nil {
-			tx.Rollback()
-			return err
+		if req.UserAttribute.ID != 0 {
+			if err := tx.Updates(req.UserAttribute).Error; err != nil {
+				tx.Rollback()
+				return err
+			}
 		}
 	}
 
@@ -79,6 +87,7 @@ func (r *userRepository) GetUsers(ctx context.Context, req dto.GetUsersRequest) 
 
 	q = q.Scopes(paginator.PaginateGin(req.Page, req.PageSize))
 	q.Count(&count)
+	q = q.Order("id DESC")
 	if err := q.Find(&users).Error; err != nil {
 		return result, err
 	}
@@ -93,6 +102,7 @@ func (r *userRepository) GetUsers(ctx context.Context, req dto.GetUsersRequest) 
 }
 
 func (r *userRepository) DeleteUser(ctx context.Context, ID int) error {
+	var existUser entity.User
 	tx := r.db.Begin()
 
 	defer func() {
@@ -100,9 +110,15 @@ func (r *userRepository) DeleteUser(ctx context.Context, ID int) error {
 			tx.Rollback()
 		}
 	}()
-	tokenInfo := ctx.Value(middleware.TokenInfoContextKey).(token.Claims)
+
+	if err := r.db.Where("id = ?", ID).Find(&existUser).Error; err != nil {
+		return err
+	}
+
 	t := time.Now()
-	if err := tx.Updates(&entity.User{ID: ID, TimeDefault: entity.TimeDefault{
+	invalidateEmail := fmt.Sprintf("invalid-%s-%v", existUser.Email, t.UnixMilli())
+	tokenInfo := ctx.Value(middleware.TokenInfoContextKey).(token.Claims)
+	if err := tx.Updates(&entity.User{ID: ID, Email: invalidateEmail, TimeDefault: entity.TimeDefault{
 		DeletedAt: &t,
 		UpdatedBy: &tokenInfo.UserID,
 	}}).Error; err != nil {

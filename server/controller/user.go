@@ -119,7 +119,7 @@ func (u UserController) Create(c *gin.Context) {
 
 	response, err := u.userService.CreateUser(ctx, request)
 	if err != nil {
-		c.JSON(http.StatusNotFound, gin.H{
+		c.JSON(http.StatusInternalServerError, gin.H{
 			"message": "failed to login",
 			"error":   err.Error(),
 		})
