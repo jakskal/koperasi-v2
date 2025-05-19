@@ -63,7 +63,7 @@ func (r *savingRepository) List(ctx context.Context, req dto.GetSavingListReques
 		savings []entity.Saving
 		count   int64
 	)
-	q := r.db.Model(&entity.Saving{}).Preload("SavingChanges").Where("savings.deleted_at is NULL")
+	q := r.db.Debug().Model(&entity.Saving{}).Joins("User").Preload("SavingChanges").Preload("User").Preload("SavingType").Where("savings.deleted_at is NULL")
 
 	if req.TypeID != nil {
 		q = q.Where("saving_type_id = ?", req.TypeID)
@@ -73,8 +73,12 @@ func (r *savingRepository) List(ctx context.Context, req dto.GetSavingListReques
 		q = q.Where("user_id = ?", req.UserID)
 	}
 
-	q = q.Scopes(paginator.PaginateGin(req.Page, req.PageSize))
+	if req.Keyword != "" {
+		q = q.Where("savings.id::text = ? OR name ilike ? ", req.Keyword, fmt.Sprint("%"+req.Keyword+"%"))
+	}
+
 	q.Count(&count)
+	q = q.Scopes(paginator.PaginateGin(req.Page, req.PageSize)).Order("updated_at desc")
 	resultQuery := q.Find(&savings)
 	if err := resultQuery.Error; err != nil {
 		return result, err
@@ -87,7 +91,6 @@ func (r *savingRepository) List(ctx context.Context, req dto.GetSavingListReques
 		Count:    int(count),
 	}
 
-	fmt.Println(result)
 	return result, nil
 }
 
@@ -111,6 +114,7 @@ func (r *savingRepository) Update(ctx context.Context, req dto.UpdateSavingReque
 	savingChanges := entity.SavingChange{
 		SavingID:          currentSaving.ID,
 		TransactionTypeID: currentSaving.TransactionTypeID,
+		TransactionDate:   currentSaving.TransactionDate,
 		Notes:             currentSaving.Notes,
 		Amount:            currentSaving.Amount,
 		ChangesNotes:      req.ChangeNotes,
@@ -123,6 +127,7 @@ func (r *savingRepository) Update(ctx context.Context, req dto.UpdateSavingReque
 		Amount:            req.Amount,
 		Notes:             req.Notes,
 		TransactionTypeID: req.TransactionTypeID,
+		TransactionDate:   req.TransactionDate,
 		TimeDefault:       entity.TimeDefault{UpdatedBy: &tokenInfo.UserID},
 	}).Error; err != nil {
 		tx.Rollback()

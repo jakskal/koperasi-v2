@@ -16,20 +16,24 @@ type SavingType struct {
 }
 
 type Saving struct {
-	ID                int
-	UserID            int
-	SavingTypeID      int
-	TransactionTypeID SavingTransactionType
-	Amount            int
-	Notes             string
+	ID                int                   `json:"id"`
+	UserID            int                   `json:"user_id"`
+	SavingTypeID      int                   `json:"saving_type_id"`
+	TransactionTypeID SavingTransactionType `json:"transaction_type_id"`
+	TransactionDate   time.Time             `json:"transaction_date"`
+	Amount            int                   `json:"amount"`
+	Notes             string                `json:"notes"`
 	TimeDefault       `gorm:"embedded"`
 	SavingChanges     []SavingChange `gorm:"foreignKey:SavingID;references:ID"`
+	User              User           `gorm:"foreignKey:ID;references:UserID" json:"user"`
+	SavingType        SavingType     `gorm:"foreignKey:ID;references:SavingTypeID" json:"saving_type"`
 }
 
 type SavingChange struct {
 	ID                int
 	SavingID          int
 	TransactionTypeID SavingTransactionType
+	TransactionDate   time.Time
 	Notes             string
 	Amount            int
 	ChangesNotes      string

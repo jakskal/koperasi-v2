@@ -81,6 +81,7 @@ type GetUsersRequest struct {
 	PageSize int          `form:"page_size"`
 	OrderBy  string       `form:"order_by"`
 	Order    string       `form:"order"`
+	Keyword  string       `form:"keyword"`
 }
 
 type GetUserResponse struct {

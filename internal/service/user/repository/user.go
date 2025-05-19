@@ -79,10 +79,13 @@ func (r *userRepository) GetUsers(ctx context.Context, req dto.GetUsersRequest) 
 		users  []entity.User
 		count  int64
 	)
-	q := r.db.Model(&entity.User{}).Preload("UserAttribute").Where("users.deleted_at is NULL")
+	q := r.db.Model(&entity.User{}).Joins("JOIN user_attributes on users.attribute_id = user_attributes.id").Preload("UserAttribute").Where("users.deleted_at is NULL")
 
 	if req.RoleID != nil {
 		q = q.Where("role_id = ?", req.RoleID)
+	}
+	if req.Keyword != "" {
+		q.Where("users.name ILIKE ? OR user_attributes.member_id ILIKE ? ", "%"+req.Keyword+"%", "%"+req.Keyword+"%")
 	}
 
 	q = q.Scopes(paginator.PaginateGin(req.Page, req.PageSize))
